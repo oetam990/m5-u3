@@ -3,7 +3,8 @@ var express = require('express');
 var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
-
+require('dotenv').config();
+var pool = require('./models/db');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
 
@@ -21,6 +22,25 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+//Consulta select
+pool.query('select * from empleados').then(function (resultados) { 
+  console.log(resultados)
+});
+
+//Consulta insert
+var obj = {
+  nombre : 'Mateo',
+  apellido: 'Baracco',
+  trabajo: 'Software Developer',
+  edad: 32,
+  salario: 1500,
+  mail: 'mateo@mail.com'
+}
+pool.query('insert into empleados set ?',[obj]).then(function (resultados) {
+  console.log(resultados)
+});
+
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
